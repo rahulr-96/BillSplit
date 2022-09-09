@@ -1,0 +1,34 @@
+<div class="mat-elevation-z8 small-table">
+  <table mat-table [dataSource]="lstDebitOutstandingDEM" class="full-width-table" matSort aria-label="Elements" multiTemplateDataRows>
+    <!-- Id Column -->
+    <ng-container matColumnDef="BillName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>BillName</th>
+      <td mat-cell *matCellDef="let row">{{row.billName}}</td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="GroupName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Group</th>
+      <td mat-cell *matCellDef="let row">{{row.groupName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="Amount">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
+      <td mat-cell *matCellDef="let row">{{row.amount}}</td>
+    </ng-container>
+    <ng-container matColumnDef="memberName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
+      <td mat-cell *matCellDef="let row">{{row.memberName}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedColumns"></tr>
+  </table>
+
+  <mat-paginator #paginator
+                 [length]="lstDebitOutstandingDEM?.length"
+                 [pageIndex]="0"
+                 [pageSize]="50"
+                 [pageSizeOptions]="[25, 50, 100, 250]">
+  </mat-paginator>
+</div>

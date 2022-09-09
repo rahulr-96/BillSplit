@@ -112,7 +112,7 @@ namespace BillSplit.Controllers
 
         [HttpGet]
         [Route("SelectGroupWithMemberID")]
-        public IEnumerable<GroupDEM> SelectGroupWithMemberID([FromBody] MemberDEM objMemberDEM)
+        public IEnumerable<GroupDEM> SelectGroupWithMemberID(int MemberID)
         {
             try
             {
@@ -126,7 +126,7 @@ namespace BillSplit.Controllers
 
                     var selectGroupSQL = new SqliteCommand("select a.GroupID, a.GroupName from GroupTbl a, GroupMapTbl b " +
                         "where a.GroupID = b.GroupID and b.MemberId  = @MemberID", connection);
-                    selectGroupSQL.Parameters.AddWithValue("@MemberID", objMemberDEM.MemberID);
+                    selectGroupSQL.Parameters.AddWithValue("@MemberID", MemberID);
 
 
                     var reader = selectGroupSQL.ExecuteReader();
@@ -182,7 +182,7 @@ namespace BillSplit.Controllers
 
         [HttpGet]
         [Route("SelectAcPayRecMasterWithPaidBy")]
-        public IEnumerable<AcPayRecMasterDEM> SelectAcPayRecMasterWithID([FromBody] AcPayRecMasterDEM objAcPayRecMasterDEM)
+        public IEnumerable<AcPayRecMasterDEM> SelectAcPayRecMasterWithID(int PaidBy)
         {
             try
             {
@@ -197,7 +197,7 @@ namespace BillSplit.Controllers
                     var selectAcPayRecMasterSQL = new SqliteCommand("select a.AcPayRecMasterID, a.BillName, b.GroupID,  b.GroupName, a.TotalAmount " +
                         "from AcPayRecMaster a, GroupTbl b " +
                         "where  a.GroupID = b.GroupID and a.PaidBy = @PaidBy", connection);
-                    selectAcPayRecMasterSQL.Parameters.AddWithValue("@PaidBy", objAcPayRecMasterDEM.PaidBy);
+                    selectAcPayRecMasterSQL.Parameters.AddWithValue("@PaidBy", PaidBy);
 
 
                     var reader = selectAcPayRecMasterSQL.ExecuteReader();
@@ -260,7 +260,7 @@ namespace BillSplit.Controllers
 
         [HttpGet]
         [Route("SelectAcPayRecDetailWithMemberID")]
-        public IEnumerable<DebitOutstandingDEM> SelectAcPayRecDetailWithMemberID([FromBody] AcPayRecDetailsDEM objAcPayRecDetailsDEM)
+        public IEnumerable<DebitOutstandingDEM> SelectAcPayRecDetailWithMemberID(int MemberID)
         {
             try
             {
@@ -273,7 +273,7 @@ namespace BillSplit.Controllers
                         "from AcPayRecDetails b, AcPayRecMaster a, GroupTbl c, MemberTbl d " +
                         "where a.AcPayRecMasterID = b.AcPayRecMasterID and a.GroupID = c.GroupID and a.PaidBy = d.MemberID and b.MemberID = @MemberID", connection);
 
-                    selectAcPayRecDetailsSQL.Parameters.AddWithValue("@MemberID", objAcPayRecDetailsDEM.MemberID);
+                    selectAcPayRecDetailsSQL.Parameters.AddWithValue("@MemberID", MemberID);
 
 
                     var reader = selectAcPayRecDetailsSQL.ExecuteReader();

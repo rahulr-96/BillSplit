@@ -1,15 +1,15 @@
 <!--dash.component.html-->
 <div class="grid-container">
   <h1 class="mat-h1">Dashboard</h1>
-  <mat-grid-list cols="{{ ( cardLayout | async )?.columns }}" rowHeight="200px">
+  <mat-grid-list cols="{{ ( cardLayout | async )?.columns }}" rowHeight="300px">
     <!--Mini Cards-->
-    <mat-grid-tile *ngFor="let i of [1, 2, 3, 4]" [colspan]="( cardLayout | async )?.miniCard.cols"
+    <!--<mat-grid-tile *ngFor="let i of [1, 2, 3, 4]" [colspan]="( cardLayout | async )?.miniCard.cols"
                    [rowspan]="( cardLayout | async )?.miniCard.rows">
       <mat-card><div>Mini Card Content Here</div></mat-card>
-    </mat-grid-tile>
+    </mat-grid-tile>-->
     <!--Charts-->
     <!--Charts-->
-    <mat-grid-tile [colspan]="( cardLayout | async )?.chart.cols" [rowspan]="( cardLayout | async )?.chart.rows">
+    <mat-grid-tile style="overflow:auto" [colspan]="( cardLayout | async )?.chart.cols" [rowspan]="( cardLayout | async )?.chart.rows">
       <mat-card >
         <mat-card-header>
           <mat-card-title>Groups</mat-card-title>

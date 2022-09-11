@@ -8,6 +8,8 @@ namespace BillSplit
     public class MemberDEM
     {
         public string MemberName { get; set; }
+        public string Email { get; set; }
+        public string PassWord { get; set; }
         public int MemberID { get; set; }
     }
 }

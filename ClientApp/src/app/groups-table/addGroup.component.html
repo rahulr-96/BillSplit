@@ -1,0 +1,25 @@
+<div mat-dialog-content>
+  <p>
+    <input type="text" matInput placeholder="Group Name" [(ngModel)]="data.GroupName">
+  </p>
+  <p>
+    <input type="text" [(ngModel)]="email" matInput placeholder="Search Member">
+  </p>
+  <button (click)="searchMember()">Search</button>
+  <div *ngIf="errOrSuccess">
+    <p>{{msg}}</p>
+  </div>
+  <button (click)="addMember()">Add</button>
+  <table mat-table [dataSource]="lstGroupMapDEM">
+    <ng-container matColumnDef="memberName">
+      <th mat-header-cell *matHeaderCellDef>Member</th>
+      <td mat-cell *matCellDef="let row">{{row.MemberName}}</td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayColumns;"></tr>
+  </table>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>

@@ -58,27 +58,22 @@ namespace BillSplit.Controllers
 
         [HttpPost]
         [Route("SaveGroup")]
-        public string  SaveGroup([FromBody] GroupDEM objGroupDEM)
+        public GroupDEM SaveGroup([FromBody] GroupDEM objGroupDEM)
         {
+            GroupDEM objTmpGroupDEM = null;
+
             try
             {
 
-                if (objGroupDEM.GroupName == null)
-                {
-                    return "Failed";
-                }
 
                 using (var connection = new SqliteConnection("Data Source=D:\\sqlite\\SQLiteStudio\\BillSplit.db"))
                 {
                     connection.Open();
 
-                   // var sqlStr = "INSERT INTO GroupTbl (GroupName, purge) VALUES (" + ""+ GroupName + "" + "," + Purge + ") RETURNING GroupID;";
 
-
-                    var insertSQL = new SqliteCommand("INSERT INTO GroupTbl (GroupName, purge)" +
-                        " VALUES (@GroupName, @Purge) RETURNING GroupID", connection);
+                    var insertSQL = new SqliteCommand("INSERT INTO GroupTbl (GroupName)" +
+                        " VALUES (@GroupName) RETURNING GroupID", connection);
                     insertSQL.Parameters.AddWithValue("@GroupName", objGroupDEM.GroupName);
-                    insertSQL.Parameters.AddWithValue("@Purge", objGroupDEM.Purge);
 
 
                     var re = insertSQL.ExecuteScalar();
@@ -97,16 +92,55 @@ namespace BillSplit.Controllers
                         insertMapSQL.ExecuteScalar();
                     }
 
+                    var selectGroupSQL = new SqliteCommand("select GroupID, GroupName from GroupTbl where GroupID = @GroupID", connection);
+                    selectGroupSQL.Parameters.AddWithValue("@GroupID", Convert.ToInt32(re));
+
+
+                    var reader = selectGroupSQL.ExecuteReader();
+
+
+
+                    GroupMapDEM objGroupMapDEM = null;
+
+                    while (reader.Read())
+                    {
+                        objTmpGroupDEM = new GroupDEM();
+                        objTmpGroupDEM.GroupID = Convert.ToInt32(reader["GroupID"]);
+                        objTmpGroupDEM.GroupName = Convert.ToString(reader["GroupName"]);
+                    }
+
+                    
+                        var selectGroupMapSQL = new SqliteCommand("select  b.GroupMapID, a.GroupID,  a.GroupName, c.MemberID, c.MemberName from GroupTbl a, GroupMapTbl b, MemberTbl c " +
+                            "where a.GroupID = b.GroupID and b.MemberId = c.MemberID and a.GroupID = @GroupID", connection);
+                        selectGroupMapSQL.Parameters.AddWithValue("@GroupID", Convert.ToInt32(re));
+
+                        var GroupMapreader = selectGroupMapSQL.ExecuteReader();
+
+                    objTmpGroupDEM.GroupMapDEMCollection = new List<GroupMapDEM>();
+
+                        while (GroupMapreader.Read())
+                        {
+                            objGroupMapDEM = new GroupMapDEM();
+                            objGroupMapDEM.GroupMapID = Convert.ToInt32(GroupMapreader["GroupMapID"]);
+                            objGroupMapDEM.GroupID = Convert.ToInt32(GroupMapreader["GroupID"]);
+                            objGroupMapDEM.MemberID = Convert.ToInt32(GroupMapreader["MemberID"]);
+                            objGroupMapDEM.MemberName = Convert.ToString(GroupMapreader["MemberName"]);
+
+                        objTmpGroupDEM.GroupMapDEMCollection.Add(objGroupMapDEM);
+                        }
+
+                    
+
                     connection.Close();
                 }
 
 
-                return "Success ";
+                return objTmpGroupDEM;
             }
 
             catch (Exception ex)
             {
-                return "Error " + ex.ToString();  
+                return objTmpGroupDEM = null;
             }
         }
 
@@ -120,8 +154,6 @@ namespace BillSplit.Controllers
                 using (var connection = new SqliteConnection("Data Source=D:\\sqlite\\SQLiteStudio\\BillSplit.db"))
                 {
                     connection.Open();
-
-                    // var sqlStr = "INSERT INTO GroupTbl (GroupName, purge) VALUES (" + ""+ GroupName + "" + "," + Purge + ") RETURNING GroupID;";
 
 
                     var selectGroupSQL = new SqliteCommand("select a.GroupID, a.GroupName from GroupTbl a, GroupMapTbl b " +
@@ -357,6 +389,122 @@ namespace BillSplit.Controllers
             {
                 throw;
             }
+        }
+
+        [HttpGet]
+        [Route("Login")]
+        public MemberDEM Login(string Email, string passWord)
+        {
+
+            using (var connection = new SqliteConnection("Data Source=D:\\sqlite\\SQLiteStudio\\BillSplit.db"))
+            {
+                connection.Open();
+
+                var selectAcPayRecDetailsSQL = new SqliteCommand("select * from MemberTbl where Email =@Email and passWord = @passWord", connection);
+
+                selectAcPayRecDetailsSQL.Parameters.AddWithValue("@Email", Email);
+                selectAcPayRecDetailsSQL.Parameters.AddWithValue("@passWord", passWord);
+                var reader = selectAcPayRecDetailsSQL.ExecuteReader();
+
+                MemberDEM objMemberDEM = null;
+
+                while (reader.Read())
+                {
+                    objMemberDEM = new MemberDEM();
+
+                    objMemberDEM.MemberID = Convert.ToInt32(reader["MemberID"]);
+                    objMemberDEM.MemberName = Convert.ToString(reader["MemberName"]);
+                    objMemberDEM.Email = Convert.ToString(reader["Email"]);
+                    objMemberDEM.PassWord = Convert.ToString(reader["passWord"]);
+
+
+                }
+
+                connection.Close();
+
+                return objMemberDEM;
+            }
+
+
+        }
+
+        [HttpGet]
+        [Route("searchMemberWithEmailID")]
+        public MemberDEM searchMemberWithEmailID(string Email)
+        {
+
+            using (var connection = new SqliteConnection("Data Source=D:\\sqlite\\SQLiteStudio\\BillSplit.db"))
+            {
+                connection.Open();
+
+                var selectAcPayRecDetailsSQL = new SqliteCommand("select * from MemberTbl where Email =@Email", connection);
+
+                selectAcPayRecDetailsSQL.Parameters.AddWithValue("@Email", Email);
+                var reader = selectAcPayRecDetailsSQL.ExecuteReader();
+
+                MemberDEM objMemberDEM = null;
+
+                while (reader.Read())
+                {
+                    objMemberDEM = new MemberDEM();
+
+                    objMemberDEM.MemberID = Convert.ToInt32(reader["MemberID"]);
+                    objMemberDEM.MemberName = Convert.ToString(reader["MemberName"]);
+                    objMemberDEM.Email = Convert.ToString(reader["Email"]);
+                    objMemberDEM.PassWord = Convert.ToString(reader["passWord"]);
+
+
+                }
+
+                connection.Close();
+
+                return objMemberDEM;
+            }
+
+
+        }
+
+        [HttpPost]
+        [Route("SignUp")]
+        public MemberDEM SignUp([FromBody] MemberDEM objMemberDEM)
+        {
+           
+            using (var connection = new SqliteConnection("Data Source=D:\\sqlite\\SQLiteStudio\\BillSplit.db"))
+            {
+                connection.Open();
+
+            var selectAcPayRecDetailsSQL = new SqliteCommand("select * from MemberTbl where Email =@Email", connection);
+
+            selectAcPayRecDetailsSQL.Parameters.AddWithValue("@Email", objMemberDEM.Email);
+            var reader = selectAcPayRecDetailsSQL.ExecuteReader();
+            var loopCounter = 0;
+            while (reader.Read())
+            {
+                loopCounter++;
+
+            }
+
+            if (loopCounter > 0)
+            {
+                return objMemberDEM = null;
+            }
+            else
+            {
+                var insertSQL = new SqliteCommand("INSERT INTO MemberTbl (MemberName, Email, PassWord) VALUES (@MemberName,@Email, @PassWord)", connection);
+                insertSQL.Parameters.AddWithValue("@MemberName", objMemberDEM.MemberName);
+                insertSQL.Parameters.AddWithValue("@Email", objMemberDEM.Email);
+                insertSQL.Parameters.AddWithValue("@PassWord", objMemberDEM.PassWord);
+
+                var re = insertSQL.ExecuteScalar();
+            }
+
+                connection.Close();
+            }
+
+
+            return objMemberDEM;
+
+
         }
 
     }

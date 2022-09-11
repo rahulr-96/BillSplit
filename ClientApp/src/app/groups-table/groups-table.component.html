@@ -1,26 +1,27 @@
 <div  class="mat-elevation-z8 small-table">
+  <button (click)="openDialog()">Add</button>
   <table  mat-table [dataSource]="lstGroupDEM" class="full-width-table" matSort aria-label="Elements" multiTemplateDataRows>
     <!-- Id Column -->
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-      <td mat-cell *matCellDef="let row">{{row.groupID}}</td>
+      <td mat-cell *matCellDef="let row">{{row.GroupID}}</td>
     </ng-container>
 
     <!-- Name Column -->
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-      <td mat-cell *matCellDef="let row">{{row.groupName}}</td>
+      <td mat-cell *matCellDef="let row">{{row.GroupName}}</td>
     </ng-container>
     <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
     <ng-container matColumnDef="expandedDetail">
       <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
         <div class="example-element-detail"
              [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-          <table mat-table [dataSource]="element.groupMapDEMCollection">
+          <table mat-table [dataSource]="element.GroupMapDEMCollection">
             <!-- Name Column -->
             <ng-container matColumnDef="memberName">
               <th mat-header-cell *matHeaderCellDef >Name</th>
-              <td mat-cell *matCellDef="let row">{{row.memberName}}</td>
+              <td mat-cell *matCellDef="let row">{{row.MemberName}}</td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumnsExpanded"></tr>
             <tr mat-row *matRowDef="let element; columns: displayedColumnsExpanded;" ></tr>
@@ -39,7 +40,7 @@
   <mat-paginator #paginator
       [length]="lstGroupDEM?.length"
       [pageIndex]="0"
-      [pageSize]="50"
-      [pageSizeOptions]="[25, 50, 100, 250]">
+      [pageSize]="5"
+      [pageSizeOptions]="[5]">
   </mat-paginator>
 </div>

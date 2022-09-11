@@ -9,7 +9,6 @@ namespace BillSplit
     {
         public int GroupID { get; set; }
         public string GroupName { get; set; }
-        public int Purge { get; set; }
         public List<GroupMapDEM> GroupMapDEMCollection { get; set; }
     }
 
